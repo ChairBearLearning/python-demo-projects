@@ -1,6 +1,6 @@
 import ast
 
-def arithmetic_arranger(num_list, is_calculated = False):
+def arithmetic_arranger(num_list, is_calculated = False, is_advanced = False):
     input_list = ast.literal_eval(num_list) # turn the string list to actual list
     plus = "+"
     minus = "-"
@@ -12,8 +12,9 @@ def arithmetic_arranger(num_list, is_calculated = False):
         return "Error: Too many equations have been passed"
 
     for equation in input_list:
-        if plus not in equation and minus not in equation: #to hit rule 2
-            return "Error: Accepted opperations are addition or subtraction"
+        if not is_advanced:
+            if plus not in equation and minus not in equation: #to hit rule 2
+                return "Error: Accepted opperations are addition or subtraction"
 
         char = equation.split()
         line_one = char[0]
@@ -27,7 +28,10 @@ def arithmetic_arranger(num_list, is_calculated = False):
             int(line_one)
             int(line_two)
         except Exception:
-            return "Error: Equations can only contain digits and + or -"
+               if not is_advanced:
+                    return "Error: Equations can only contain digits and + or -"
+               else:
+                    return "Error: Equations can only contain digits and mathematic operators"
 
         longest = max(length_a, length_b)
         shortest = min(length_a, length_b)
@@ -44,12 +48,21 @@ def arithmetic_arranger(num_list, is_calculated = False):
 
         if is_calculated:
             result = 0
-            if operator == plus:
-                result = int(char[0]) + int(char[2])
-            elif operator == minus:
-                 result = int(char[0]) - int(char[2])
-            else:
-                return "Operator not recognised"
+            match operator:
+                case '+':
+                    result = int(char[0]) + int(char[2])
+                case '-':
+                    result = int(char[0]) - int(char[2])
+                case '/':
+                    result = int(char[0]) / int(char[2])
+                case '*':
+                    result = int(char[0]) * int(char[2])
+                case '**':
+                    result = int(char[0]) ** int(char[2])
+                case '//':
+                    result = int(char[0]) // int(char[2])
+                case _:
+                    return "Operator not recognised"
             line_four = str(result)
             length_c = len(line_four)
             result_diff = longest - length_c
@@ -75,8 +88,9 @@ def arithmetic_arranger(num_list, is_calculated = False):
 def main():
     print('Welcome to the Freecodecamp challange: Arithmetic calculations \n \nThis python file accepts input in the form of ["digit operator digit", "..."] \nei ["32 + 698", "3801 - 2", "45 + 43", "123 + 49"] \nThe basic mode up hits the rules for the challenge, whilst the advanced introduces additional operators')
     user_math = input("Enter your arithmetic: ")
+    is_advance = input("Your entered arithmetic contains operators other than + or -?  Please enter True or False: ")
     to_calculate = input("Would you like the results of the submitted arithmetic shown? Please enter True or False: ")
-    user_input = arithmetic_arranger(user_math, to_calculate)
+    user_input = arithmetic_arranger(user_math, to_calculate, is_advance)
     print(user_input)
 
 main()
